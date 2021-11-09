@@ -8,14 +8,18 @@ import math
 import numpy as np
 
 
-
 def calculate_point(idx, steps, inside_radius, width, loopnum, loop_angle, phasenum, phase_angle, angle_offset, center_offset_x, center_offset_y):
-    factor = (math.sin(idx/steps*math.pi*2) + 1)/2
-    angle = loop_angle*(idx/steps)+loopnum*loop_angle+phasenum*phase_angle + angle_offset
-    radial_point_distance = inside_radius + factor * width
-    y_value = math.sin(angle) * radial_point_distance + center_offset_x
-    x_value = math.cos(angle) * radial_point_distance + center_offset_y
+    outside_radius = inside_radius + width
+    electrical_angle = (idx/steps)*math.pi*2
+    a = 0.5 * (outside_radius**2 - inside_radius**2)
+    b = 0.5 * (outside_radius**2 +
+    inside_radius**2)
+    radius = math.sqrt(a * math.sin(electrical_angle) + b)
+    mechanical_angle = loop_angle*(idx/steps)+loopnum*loop_angle+phasenum*phase_angle + angle_offset
+    y_value = math.sin(mechanical_angle) * radius + center_offset_x
+    x_value = math.cos(mechanical_angle) * radius + center_offset_y
     return [x_value, y_value]
+
 
 center_offset_x = 100
 center_offset_y = 100
